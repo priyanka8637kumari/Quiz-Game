@@ -40,7 +40,7 @@ This project is deployed on Netlify and the source code is available on GitHub.
 3. Open `index.html` in your web browser.
 
 ## Live Demo
-Check out the live demo of the quiz game here: [Live Demo]([(https://computer-quiz-game.netlify.app))
+Check out the live demo of the quiz game here: https://computer-quiz-game.netlify.app
 
 
 
