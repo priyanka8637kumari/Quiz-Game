@@ -10,7 +10,6 @@ function getQueryParams() {
     return params;
   }
   
-  // Retrieve the score from query parameters and display it
   const params = getQueryParams();
   const finalScore = params.score;
   document.getElementById("finalScore").innerText = finalScore;
