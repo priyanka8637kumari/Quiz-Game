@@ -20,33 +20,16 @@ const MAX_QUESTIONS = 10;
 // Fetching questions from the API
 async function fetchQuestions() {
   try {
+    // API call dynamically fetches 10 questions from the API, in case we want to change the number of questions in the future
     const res = await fetch(
-      "https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple"
+      `https://opentdb.com/api.php?amount=${MAX_QUESTIONS}&category=18&difficulty=easy&type=multiple`
     );
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
     const loadedQuestions = await res.json();
-    questions = loadedQuestions.results.map((loadedQuestion) => {
-      const formattedQuestion = {
-        question: loadedQuestion.question,
-      };
-
-      const answerChoices = [...loadedQuestion.incorrect_answers];
-      formattedQuestion.answer = Math.floor(Math.random() * 3) + 1;
-      answerChoices.splice(
-        formattedQuestion.answer - 1,
-        0,
-        loadedQuestion.correct_answer
-      );
-
-      answerChoices.forEach((choice, index) => {
-        formattedQuestion["choice" + (index + 1)] = choice;
-      });
-
-      return formattedQuestion;
-    });
-
+    // For readability break down the code into smaller functions
+    questions = formatQuestions(loadedQuestions.results);
     startGame();
   } catch (err) {
     console.error("Failed to fetch questions:", err);
@@ -54,16 +37,41 @@ async function fetchQuestions() {
   }
 }
 
+// Function to format the questions
+function formatQuestions(loadedQuestions) {
+  return loadedQuestions.map((loadedQuestion) => {
+    const formattedQuestion = {
+      question: loadedQuestion.question,
+    };
+
+    const answerChoices = [...loadedQuestion.incorrect_answers];
+    formattedQuestion.answer = Math.floor(Math.random() * 3) + 1;
+    answerChoices.splice(
+      formattedQuestion.answer - 1,
+      0,
+      loadedQuestion.correct_answer
+    );
+
+    answerChoices.forEach((choice, index) => {
+      formattedQuestion[`choice${index + 1}`] = choice;
+    });
+
+    return formattedQuestion;
+  });
+}
+
 // Function to start the game
-startGame = () => {
+// Be consistent with your function declarations, use either function declaration or arrow functions
+function startGame() {
   questionCounter = 0;
   score = 0;
   availableQuestions = [...questions];
   getNewQuestion();
-};
+}
 
 // Function to get a new question
-getNewQuestion = () => {
+// Be consistent with your function declarations, use either function declaration or arrow functions
+function getNewQuestion() {
   if (availableQuestions.length === 0 || questionCounter >= MAX_QUESTIONS) {
     return window.location.assign(`/result.html?score=${score}`);
   }
@@ -83,7 +91,7 @@ getNewQuestion = () => {
   availableQuestions.splice(questionIndex, 1);
   acceptingAnswers = true;
   nextButton.disabled = true;
-};
+}
 
 // Using Event listener for the multiple choices
 choices.forEach((choice) => {
@@ -95,7 +103,7 @@ choices.forEach((choice) => {
     const selectedAnswer = selectedChoice.classList[1].replace("choice", "");
 
     const classToApply =
-    selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
+      selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
     selectedChoice.parentElement.classList.add(classToApply);
 
     if (classToApply === "incorrect") {
@@ -126,6 +134,7 @@ restartButton.addEventListener("click", () => {
 // Function to increment the score
 incrementScore = (num) => {
   score += num;
+  // Remember to remove console.log statements
   console.log(score);
   scoreText.innerText = score;
 };
